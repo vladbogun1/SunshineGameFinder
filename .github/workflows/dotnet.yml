@@ -11,7 +11,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -35,9 +34,13 @@ jobs:
       run: dotnet publish -c Release -r win-x64 --self-contained true -o publish
       working-directory: SunshineGameFinder
 
-    - name: Generate release tag
-      id: tag
-      run: echo "TAG_NAME=auto-$(date +'%Y-%m-%d-%H-%M')" >> $GITHUB_ENV
+    - name: Create and push timestamped tag
+      run: |
+        TIMESTAMP=$(date +'%Y-%m-%d-%H-%M-%S')
+        git config user.name "github-actions"
+        git config user.email "github-actions@github.com"
+        git tag "auto-${TIMESTAMP}"
+        git push origin "auto-${TIMESTAMP}"
 
     - name: Create GitHub Release
       id: create_release
@@ -45,8 +48,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ env.TAG_NAME }}
-        release_name: Release ${{ env.TAG_NAME }}
+        tag_name: auto-${{ github.run_id }}
+        release_name: Release auto-${{ github.run_id }}
         body: |
           Automatic Release from push to main
         draft: false
@@ -58,3 +61,4 @@ jobs:
         files: SunshineGameFinder/publish/SunshineGameFinder.exe
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+

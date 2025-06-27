@@ -6,6 +6,8 @@
 		<TargetFramework>net9.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+        <SelfContained>true</SelfContained>
 		<Title>Sunshine Game Finder</Title>
 		<Description>Searches your computer for various common game install paths for the Sunshine application. After running it, all games that did not already exist will be added to the apps.json, meaning your Moonlight client should see them next time it is started.</Description>
 		<PackageProjectUrl>https://github.com/JMTK/SunshineGameFinder</PackageProjectUrl>

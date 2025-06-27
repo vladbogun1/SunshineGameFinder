@@ -361,13 +361,3 @@ static bool IsRunAsAdmin()
 }
 
 rootCommand.Invoke(args);
-ExitWithPause();
-
-static void ExitWithPause()
-{
-    if (System.Diagnostics.Debugger.IsAttached)
-    {
-        Console.WriteLine("\nPress any key to exit...");
-        Console.ReadKey();
-    }
-}

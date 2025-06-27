@@ -35,12 +35,14 @@ jobs:
       working-directory: SunshineGameFinder
 
     - name: Create and push timestamped tag
+      id: tag
       run: |
-        TIMESTAMP=$(date +'%Y-%m-%d-%H-%M-%S')
+        TAG_NAME=auto-$(date +'%Y-%m-%d-%H-%M-%S')
+        echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
         git config user.name "github-actions"
         git config user.email "github-actions@github.com"
-        git tag "auto-${TIMESTAMP}"
-        git push origin "auto-${TIMESTAMP}"
+        git tag "$TAG_NAME"
+        git push origin "$TAG_NAME"
 
     - name: Create GitHub Release
       id: create_release
@@ -48,8 +50,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: auto-${{ github.run_id }}
-        release_name: Release auto-${{ github.run_id }}
+        tag_name: ${{ env.TAG_NAME }}
+        release_name: Release ${{ env.TAG_NAME }}
         body: |
           Automatic Release from push to main
         draft: false
@@ -58,7 +60,7 @@ jobs:
     - name: Upload .exe to Release
       uses: softprops/action-gh-release@v1
       with:
+        tag_name: ${{ env.TAG_NAME }}
         files: SunshineGameFinder/publish/SunshineGameFinder.exe
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-

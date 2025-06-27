@@ -1,12 +1,13 @@
 # This workflow will build a .NET project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
-name: .NET
+name: .NET Auto Release
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   build:
@@ -34,18 +35,20 @@ jobs:
       run: dotnet publish -c Release -r win-x64 --self-contained true -o publish
       working-directory: SunshineGameFinder
 
+    - name: Generate release tag
+      id: tag
+      run: echo "TAG_NAME=auto-$(date +'%Y-%m-%d-%H-%M')" >> $GITHUB_ENV
+
     - name: Create GitHub Release
       id: create_release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ github.ref_name }}
-        release_name: Release ${{ github.ref_name }}
+        tag_name: ${{ env.TAG_NAME }}
+        release_name: Release ${{ env.TAG_NAME }}
         body: |
-          Changes in this Release
-          - First Change
-          - Second Change
+          Automatic Release from push to main
         draft: false
         prerelease: false
 

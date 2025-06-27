@@ -60,7 +60,7 @@ rootCommand.AddOption(addlExeExclusionWords);
 var sunshineConfigLocationOption = new Option<string>("--sunshineConfigLocation", "Specify the Sunshine apps.json location");
 sunshineConfigLocationOption.AllowMultipleArgumentsPerToken = false;
 sunshineConfigLocationOption.AddAlias("-c");
-sunshineConfigLocationOption.SetDefaultValue(@"C:\Program Files\Sunshine\config\apps.json");
+sunshineConfigLocationOption.SetDefaultValue(@"C:\Program Files\Apollo\config\apps.json");
 rootCommand.AddOption(sunshineConfigLocationOption);
 
 var forceOption = new Option<bool>("--force", "Force update apps.json even if games already existed");

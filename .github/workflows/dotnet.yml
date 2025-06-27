@@ -15,22 +15,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Setup .NET
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup .NET 9
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 9.0.x
+
     - name: Restore dependencies
       run: dotnet restore
       working-directory: SunshineGameFinder
-    - name: Build
-      run: dotnet build --no-restore
+
+    - name: Build project
+      run: dotnet build --no-restore -c Release
       working-directory: SunshineGameFinder
-    - name: Create Release
+
+    - name: Publish for Windows x64
+      run: dotnet publish -c Release -r win-x64 --self-contained true -o publish
+      working-directory: SunshineGameFinder
+
+    - name: Create GitHub Release
       id: create_release
       uses: actions/create-release@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: ${{ github.ref_name }}
         release_name: Release ${{ github.ref_name }}
@@ -40,3 +49,10 @@ jobs:
           - Second Change
         draft: false
         prerelease: false
+
+    - name: Upload .exe to Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: SunshineGameFinder/publish/SunshineGameFinder.exe
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
